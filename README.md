@@ -1,2 +1,1 @@
-# CYBERSECURITY-DATA
-CYBERSECURITY + DATA
+Security Operations Analytics Platform (SOC)
