@@ -1,0 +1,28 @@
+# Playbook: <NOME DO INCIDENTE>
+
+## Resumo
+Breve descrição do incidente.
+
+## Critérios de Identificação
+- Regra que disparou: <id da regra>
+- Query de detecção: <elastic query / sigma>
+
+## Severidade
+- Baixa / Média / Alta / Crítica
+
+## Ações Imediatas
+1. Isolar host: `kubectl taint node ...` ou bloquear IP no firewall.
+2. Coletar evidências: listar arquivos, copiar logs, criar snapshot do disco.
+3. Acionar EDR para quarentena.
+
+## Comunicação
+- Notificar: SOC Lead, CTO, Jurídico
+- Canal: Slack #incidentes, e-mail
+
+## Remediação
+- Passos detalhados para contornar a vulnerabilidade.
+
+## Pós-Incident
+- RCA (root cause analysis)
+- Lições aprendidas
+- Atualizar regras / documentação
