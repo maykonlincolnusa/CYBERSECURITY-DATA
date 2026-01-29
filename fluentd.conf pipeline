@@ -1,0 +1,15 @@
+<source>
+  @type tail
+  path /var/log/**/*.log
+  pos_file /var/log/fluentd.pos
+  tag soc.logs
+  format none
+</source>
+
+<match soc.logs>
+  @type forward
+  <server>
+    host elasticsearch
+    port 24224
+  </server>
+</match>
