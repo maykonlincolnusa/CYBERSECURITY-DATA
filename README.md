@@ -159,7 +159,6 @@ SOC-Platform/
     ├── docker-compose.yml
     └── demo_data/            # sample events for testing
 
-> Copie essa estrutura para iniciar o repositório. Cada pasta tem um README próprio explicando como usar.
 
 
 
