@@ -1,0 +1,7 @@
+topics:
+  - name: raw-events
+    partitions: 6
+    replication: 3
+  - name: enriched-events
+    partitions: 6
+    replication: 3
