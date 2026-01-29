@@ -469,7 +469,6 @@ Contato
 
 Para dúvidas e contribuições: security- maykonlincoln.com
 maykon_zero@hotmail.com 
-(substitua pelo contato real).
 
 
 ---
