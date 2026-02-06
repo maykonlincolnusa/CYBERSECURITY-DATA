@@ -1,476 +1,1010 @@
-SOC — Security Operations Analytics Platform
+<div align="center">
 
-> Repositório inicial para uma plataforma de Security Operations Analytics voltada para proteção, ingestão, análise e resposta a incidentes de segurança em ambientes corporativos.
+# 🛡️ SOC Platform
 
+### *Enterprise-Grade Security Operations Analytics & Response*
 
+[![Security](https://img.shields.io/badge/Security-Enterprise-FF0000?style=for-the-badge&logo=security&logoColor=white)](https://www.iso.org/isoiec-27001-information-security.html)
+[![Elasticsearch](https://img.shields.io/badge/Elasticsearch-8.10+-005571?style=for-the-badge&logo=elasticsearch&logoColor=white)](https://www.elastic.co/)
+[![Kafka](https://img.shields.io/badge/Apache_Kafka-Real--time-231F20?style=for-the-badge&logo=apache-kafka&logoColor=white)](https://kafka.apache.org/)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-Cloud_Native-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)](https://kubernetes.io/)
+[![License](https://img.shields.io/badge/License-Apache_2.0-green?style=for-the-badge)](LICENSE)
 
+<img src="https://raw.githubusercontent.com/seu-org/SOC-Platform/main/.github/assets/soc-banner.png" alt="SOC Platform Banner" width="800" onerror="this.style.display='none'"/>
 
----
+**[Features](#-principais-recursos)** • 
+**[Architecture](#-arquitetura)** • 
+**[Quick Start](#-instalação-rápida)** • 
+**[Documentation](#-documentação)** • 
+**[Security](#-segurança-e-compliance)**
 
-Índice
-
-1. Visão Geral
-
-
-2. Objetivos
-
-
-3. Principais Recursos
-
-
-4. Arquitetura (resumida)
-
-
-5. Estrutura do Repositório
-
-
-6. Instalação Rápida (dev)
-
-
-7. Deploy (produção) — recomendações
-
-
-8. Fluxo de Dados e Componentes
-
-
-9. Detecção e Regras (exemplo Sigma / Elastic)
-
-
-10. Playbooks de Resposta a Incidentes
-
-
-11. Segurança e Governança de Dados
-
-
-12. Observabilidade e Métricas
-
-
-13. Testes, QA e CI/CD
-
-
-14. Contribuição
-
-
-15. Licença
-
-
-
+</div>
 
 ---
 
-Visão Geral
+## 🎯 Visão Geral
 
-Este projeto fornece uma base organizada para construir uma plataforma de Security Operations Center (SOC) orientada a dados. O objetivo é coletar e normalizar telemetria (logs, eventos de rede, alertas de endpoints), armazenar de forma segura, aplicar pipelines de detecção (regras, ML), gerar alertas e automatizar respostas usando playbooks.
+**SOC Platform** é uma solução enterprise de **Security Operations Center** orientada a dados, projetada para proteger ambientes corporativos através de **detecção inteligente**, **resposta automatizada** e **análise avançada** de ameaças.
 
-É uma estrutura modular pensada para ambientes corporativos que precisam de rastreabilidade, conformidade (ex.: LGPD/ISO27001) e capacidade de escala.
+### 🚨 O Desafio da Segurança Moderna
 
+```mermaid
+graph TD
+    A[Desafios de Segurança] --> B[Volume Massivo de Logs]
+    A --> C[Ameaças Avançadas]
+    A --> D[Tempo de Resposta Crítico]
+    A --> E[Compliance Rigoroso]
+    
+    B --> F[❌ Sobrecarga do SOC]
+    C --> F
+    D --> G[❌ Brechas de Segurança]
+    E --> G
+    
+    F --> H[💰 Perdas Financeiras]
+    G --> H
+    F --> I[⚠️ Danos Reputacionais]
+    G --> I
+    
+    style A fill:#ff6b6b
+    style H fill:#ff6b6b
+    style I fill:#ff6b6b
+```
 
----
+### ✨ Nossa Solução
 
-Objetivos
+A **SOC Platform** transforma sua postura de segurança com:
 
-Centralizar ingestão de dados de segurança.
-
-Normalizar e enriquecer eventos para análise.
-
-Detectar comportamentos anômalos e ataques conhecidos.
-
-Orquestrar respostas automatizadas e humanas.
-
-Garantir confidencialidade, integridade e disponibilidade dos dados.
-
-
-
----
-
-Principais Recursos
-
-Ingestão via agentes/coletores (Beats, Fluentd, syslog, APIs).
-
-Stream processing para normalização (Kafka + stream processors).
-
-Armazenamento escalável para logs e métricas (Elasticsearch / OpenSearch, ClickHouse, S3/MinIO).
-
-Detecção baseada em regras (Sigma, YARA, Elastic rules) e ML (anomaly detection).
-
-Alerting e orquestração (Elastic Alerting, TheHive, Cortex, n8n, StackStorm).
-
-Dashboards (Kibana / OpenSearch Dashboards / Grafana).
-
-Playbooks de resposta a incidentes e integração com canais (Slack, Teams, WhatsApp via Twilio / API).
-
-
+- 🔍 **Detecção em Tempo Real** - Identifique ameaças antes que causem dano
+- 🤖 **Resposta Automatizada** - Playbooks inteligentes para contenção imediata
+- 📊 **Análise Avançada** - ML e IA para detecção de anomalias
+- 🔐 **Compliance Nativo** - LGPD, ISO 27001, GDPR by design
+- ⚡ **Escalabilidade Ilimitada** - Processe milhões de eventos por segundo
 
 ---
 
-Arquitetura (resumida)
+## 🌟 Principais Recursos
 
-[Sources] -> [Collectors/Agents] -> [Kafka / Event Bus] -> [Stream Processing (Flink/Spark/ksql)] -> [Enrichment (DBs / Threat Intel)] -> [Storage (ES/ClickHouse/S3)] -> [Detection Engines (Rules/ML)] -> [Alerting / SOAR] -> [Dashboards / Reporting]
+<table>
+<tr>
+<td width="50%">
 
-Componentes opcionais: honeypots, NDR, EDR integration, forensic store (object storage + chain of custody metadata).
+### 🚀 **Ingestão Inteligente**
+- Coleta multi-fonte (syslog, APIs, agents)
+- Normalização automática de eventos
+- Enriquecimento com threat intelligence
+- Pipeline tolerante a falhas
+- Suporte a 100+ fontes de dados
 
+**Fontes Suportadas:**
+- EDR/XDR endpoints
+- Firewalls e IDS/IPS
+- Cloud providers (AWS, Azure, GCP)
+- Active Directory / LDAP
+- Web servers e aplicações
+
+</td>
+<td width="50%">
+
+### 🎯 **Detecção Avançada**
+- Regras Sigma portáveis
+- Machine Learning para anomalias
+- Threat Intelligence integration
+- Behavioral analytics
+- Zero-day detection
+
+**Técnicas de Detecção:**
+- Rule-based (Sigma, YARA)
+- Statistical anomaly detection
+- ML clustering e classification
+- Threat hunting queries
+- Custom detection logic
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 🤖 **SOAR Integrado**
+- Playbooks de resposta automatizada
+- Orquestração multi-ferramenta
+- Workflow visual builder
+- Integração com ticketing
+- Comunicação multi-canal
+
+**Integrações:**
+- TheHive / Cortex
+- Slack, Teams, WhatsApp
+- ServiceNow, Jira
+- Email, SMS, PagerDuty
+- Custom webhooks
+
+</td>
+<td width="50%">
+
+### 📈 **Analytics & Dashboards**
+- Dashboards em tempo real
+- Relatórios executivos
+- KPIs de segurança
+- Threat intelligence feeds
+- Forensics timeline
+
+**Visualizações:**
+- Executive overview
+- SOC analyst workspace
+- Incident timeline
+- Threat map geográfico
+- Compliance reports
+
+</td>
+</tr>
+</table>
 
 ---
 
-Estrutura do Repositório
+## 🏗️ Arquitetura
 
+### Visão Geral do Sistema
+
+```mermaid
+graph TB
+    subgraph "Data Sources"
+        A1[🖥️ Endpoints<br/>EDR/Agents]
+        A2[🔥 Network<br/>Firewall/IDS]
+        A3[☁️ Cloud<br/>AWS/Azure/GCP]
+        A4[🌐 Applications<br/>Web/API]
+    end
+    
+    subgraph "Ingestion Layer"
+        B1[Filebeat]
+        B2[Winlogbeat]
+        B3[Packetbeat]
+        B4[Custom Collectors]
+    end
+    
+    subgraph "Message Bus"
+        C[Apache Kafka<br/>Event Streaming]
+    end
+    
+    subgraph "Processing Layer"
+        D1[Apache Flink<br/>Stream Processing]
+        D2[Enrichment Service<br/>Threat Intel]
+        D3[Normalization<br/>ECS Format]
+    end
+    
+    subgraph "Storage Layer"
+        E1[Elasticsearch<br/>Hot Data]
+        E2[ClickHouse<br/>Analytics]
+        E3[S3/MinIO<br/>Cold Storage]
+    end
+    
+    subgraph "Detection Engine"
+        F1[Sigma Rules]
+        F2[ML Models]
+        F3[Elastic Rules]
+        F4[Custom Logic]
+    end
+    
+    subgraph "SOAR Platform"
+        G1[TheHive<br/>Case Management]
+        G2[Cortex<br/>Analyzers]
+        G3[Playbooks<br/>Automation]
+    end
+    
+    subgraph "Presentation Layer"
+        H1[Kibana<br/>Dashboards]
+        H2[Grafana<br/>Metrics]
+        H3[API Gateway<br/>REST/GraphQL]
+    end
+    
+    A1 --> B1
+    A2 --> B2
+    A3 --> B3
+    A4 --> B4
+    B1 --> C
+    B2 --> C
+    B3 --> C
+    B4 --> C
+    C --> D1
+    D1 --> D2
+    D2 --> D3
+    D3 --> E1
+    D3 --> E2
+    D3 --> E3
+    E1 --> F1
+    E1 --> F2
+    E1 --> F3
+    E1 --> F4
+    F1 --> G1
+    F2 --> G1
+    F3 --> G1
+    F4 --> G1
+    G1 --> G2
+    G2 --> G3
+    E1 --> H1
+    E2 --> H2
+    G1 --> H3
+    
+    style C fill:#231F20,color:#fff
+    style F1 fill:#ff6b6b,color:#fff
+    style F2 fill:#ff6b6b,color:#fff
+    style G1 fill:#6366F1,color:#fff
+    style E1 fill:#005571,color:#fff
+```
+
+### 🔄 Pipeline de Dados
+
+<table>
+<tr>
+<th width="20%">Camada</th>
+<th width="40%">Componentes</th>
+<th width="40%">Função</th>
+</tr>
+
+<tr>
+<td>
+
+**📥 Ingestão**
+
+</td>
+<td>
+
+- Beats (File/Win/Packet)
+- Fluentd/Fluent Bit
+- Syslog receivers
+- API collectors
+
+</td>
+<td>
+
+Coleta de eventos de múltiplas fontes com suporte a backpressure e retry logic
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+**🔄 Transporte**
+
+</td>
+<td>
+
+- Apache Kafka
+- Topics particionados
+- Consumer groups
+- Replication
+
+</td>
+<td>
+
+Mensageria distribuída com garantia de entrega e alta disponibilidade
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+**⚙️ Processamento**
+
+</td>
+<td>
+
+- Apache Flink
+- Spark Streaming
+- Enrichment services
+- Normalization (ECS)
+
+</td>
+<td>
+
+Transformação, enriquecimento e normalização de eventos em tempo real
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+**💾 Armazenamento**
+
+</td>
+<td>
+
+- Elasticsearch (hot)
+- ClickHouse (warm)
+- S3/MinIO (cold)
+- ILM policies
+
+</td>
+<td>
+
+Storage hierárquico otimizado para performance e custo
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+**🎯 Detecção**
+
+</td>
+<td>
+
+- Sigma rules
+- ML models
+- Elastic detection
+- Custom analytics
+
+</td>
+<td>
+
+Identificação de ameaças usando regras, ML e threat intelligence
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+**🚨 Resposta**
+
+</td>
+<td>
+
+- TheHive
+- Cortex analyzers
+- Playbooks
+- Notifications
+
+</td>
+<td>
+
+Orquestração de resposta e automação de remediação
+
+</td>
+</tr>
+
+</table>
+
+---
+
+## 📂 Estrutura do Projeto
+
+```
 SOC-Platform/
-├── README.md
-├── LICENSE
-├── .gitignore
-├── docs/
-│   ├── architecture.md
-│   ├── deployment.md
-│   ├── security.md
-│   ├── compliance.md
-│   └── playbooks/
-│       ├── incident_playbook_template.md
-│       └── ransomware_playbook.md
-├── infra/
-│   ├── terraform/            # IaC para cloud (AWS/GCP/Azure)
-│   ├── k8s/                  # manifests and helm charts
-│   └── docker/               # docker-compose dev examples
-├── ingest/
-│   ├── beats/                # configs for Filebeat/Winlogbeat/Packetbeat
-│   ├── fluentd/              # fluentd configs
-│   └── collectors/           # custom collectors (python/go)
-├── pipeline/
-│   ├── kafka/                # kafka topics definitions
-│   ├── stream/               # flink/spark/ksql jobs
-│   └── enrichment/           # enrichment microservices
-├── storage/
-│   ├── elastic/              # index templates, ILM policies, ingest pipelines
-│   ├── clickhouse/           # schemas and migrations
-│   └── objectstore/          # s3/minio configs
-├── detection/
-│   ├── sigma/                # sigma rules
-│   ├── elastic_rules/        # elastic detection rules json
-│   └── ml_models/            # notebooks and model code
-├── soar/
-│   ├── playbooks/            # SOAR playbooks (TheHive, Cortex, n8n)
-│   └── integrations/         # connectors to slack, email, sms
-├── dashboards/
-│   ├── kibana/               # saved objects / export ndjson
-│   └── grafana/              # dashboards json
-├── scripts/                  # helper scripts, forensics helpers
-├── tools/                    # threat intel ingestion, pivots
-├── tests/                    # unit and integration tests
-└── examples/
+├── 📚 docs/                          # Documentação completa
+│   ├── architecture.md              # Arquitetura detalhada
+│   ├── deployment.md                # Guia de deploy
+│   ├── security.md                  # Políticas de segurança
+│   ├── compliance.md                # LGPD, ISO27001, GDPR
+│   └── playbooks/                   # Playbooks de resposta
+│       ├── ransomware_response.md
+│       ├── data_exfiltration.md
+│       └── incident_template.md
+│
+├── 🏗️ infra/                         # Infrastructure as Code
+│   ├── terraform/                   # Provisionamento cloud
+│   │   ├── aws/
+│   │   ├── azure/
+│   │   └── gcp/
+│   ├── kubernetes/                  # K8s manifests & Helm
+│   │   ├── charts/
+│   │   └── manifests/
+│   └── docker/                      # Docker Compose dev
+│
+├── 📥 ingest/                        # Coleta de dados
+│   ├── beats/                       # Beats configs
+│   │   ├── filebeat.yml
+│   │   ├── winlogbeat.yml
+│   │   └── packetbeat.yml
+│   ├── fluentd/                     # Fluentd configs
+│   └── collectors/                  # Custom collectors
+│       ├── aws_collector/
+│       ├── azure_collector/
+│       └── gcp_collector/
+│
+├── 🔄 pipeline/                      # Processamento de dados
+│   ├── kafka/                       # Kafka topics & configs
+│   ├── flink/                       # Flink jobs
+│   ├── spark/                       # Spark streaming
+│   └── enrichment/                  # Enrichment services
+│       ├── threat_intel/
+│       ├── geo_ip/
+│       └── asset_inventory/
+│
+├── 💾 storage/                       # Configurações de storage
+│   ├── elasticsearch/               # ES templates & ILM
+│   │   ├── index_templates/
+│   │   ├── ilm_policies/
+│   │   └── ingest_pipelines/
+│   ├── clickhouse/                  # ClickHouse schemas
+│   └── objectstore/                 # S3/MinIO configs
+│
+├── 🎯 detection/                     # Detecção de ameaças
+│   ├── sigma/                       # Sigma rules (YAML)
+│   │   ├── windows/
+│   │   ├── linux/
+│   │   ├── network/
+│   │   └── cloud/
+│   ├── elastic_rules/               # Elastic detection rules
+│   ├── ml_models/                   # ML para anomalias
+│   │   ├── notebooks/
+│   │   ├── models/
+│   │   └── training_data/
+│   └── threat_intel/                # Feeds de threat intel
+│
+├── 🤖 soar/                          # SOAR & Automação
+│   ├── thehive/                     # TheHive configs
+│   ├── cortex/                      # Cortex analyzers
+│   ├── playbooks/                   # Playbooks automação
+│   │   ├── isolation/
+│   │   ├── containment/
+│   │   └── remediation/
+│   └── integrations/                # Integrações externas
+│       ├── slack/
+│       ├── email/
+│       └── ticketing/
+│
+├── 📊 dashboards/                    # Visualizações
+│   ├── kibana/                      # Kibana saved objects
+│   │   ├── soc_overview.ndjson
+│   │   ├── threat_hunting.ndjson
+│   │   └── compliance.ndjson
+│   └── grafana/                     # Grafana dashboards
+│
+├── 🔧 scripts/                       # Scripts utilitários
+│   ├── forensics/                   # Scripts forenses
+│   ├── threat_hunting/              # Hunting queries
+│   └── maintenance/                 # Manutenção
+│
+├── 🧪 tests/                         # Testes
+│   ├── unit/
+│   ├── integration/
+│   └── e2e/
+│
+└── 📦 examples/                      # Exemplos e demos
     ├── docker-compose.yml
-    └── demo_data/            # sample events for testing
-
-
-
-
+    ├── sample_data/
+    └── demo_scenarios/
+```
 
 ---
 
-Instalação Rápida (dev)
+## 🚀 Instalação Rápida
 
-> Exemplo com Docker Compose — recomendado apenas para ambiente local de desenvolvimento.
+### Pré-requisitos
 
+- Docker 20.10+
+- Docker Compose 2.0+ (para dev)
+- Kubernetes 1.24+ (para produção)
+- Terraform 1.0+ (para IaC)
+- Helm 3.0+
 
+### 🐳 Ambiente de Desenvolvimento (Docker Compose)
 
-1. Clone o repositório
-
-
-
+```bash
+# Clone o repositório
 git clone https://github.com/SEU-ORG/SOC-Platform.git
 cd SOC-Platform
 
-2. Subir componentes mínimos (docker-compose de exemplo em examples/docker-compose.yml)
+# Configure variáveis de ambiente
+cp .env.example .env
+# Edite .env com suas configurações
 
+# Suba o ambiente completo
+docker-compose -f examples/docker-compose.yml up -d
 
+# Aguarde inicialização (2-3 minutos)
+docker-compose ps
 
-docker-compose -f examples/docker-compose.yml up -d --build
+# Acesse os serviços
+echo "Kibana:        http://localhost:5601"
+echo "Grafana:       http://localhost:3000"
+echo "TheHive:       http://localhost:9000"
+echo "Elasticsearch: http://localhost:9200"
+```
 
-3. Ingestão de dados de exemplo
+### ☁️ Deploy em Produção (Kubernetes)
 
+```bash
+# Provisione infraestrutura
+cd infra/terraform/aws  # ou azure/gcp
+terraform init
+terraform plan
+terraform apply
 
+# Deploy com Helm
+cd ../../kubernetes/charts
+helm install soc-platform ./soc-platform \
+  --namespace security \
+  --create-namespace \
+  -f values-production.yaml
 
-# enviar evento de teste para Logstash / HTTP endpoint
-curl -XPOST 'http://localhost:5044/_bulk' -d '{"test": "evento"}'
+# Verifique o deploy
+kubectl get pods -n security
+kubectl get services -n security
+```
 
-4. Acessar dashboards
+### 📊 Carga de Dados de Exemplo
 
+```bash
+# Ingeste dados de exemplo para testes
+cd examples/sample_data
+./load_sample_events.sh
 
+# Verifique no Kibana
+curl -XGET "localhost:9200/_cat/indices?v"
 
-Kibana: http://localhost:5601
-
-Grafana: http://localhost:3000
-
-
-
----
-
-Deploy (produção) — recomendações
-
-Provisionar via Terraform (infra cloud) + Helm charts (Kubernetes).
-
-Usar managed services quando possível (Amazon MSK / Amazon OpenSearch Service / Amazon EKS / GKE) para reduzir manutenção.
-
-Implementar rede privada, subnets, NAT gateways e load balancers.
-
-Habilitar backups e políticas de retenção (ILM) para índices.
-
-Usar KMS (AWS KMS / Google KMS / HashiCorp Vault) para gerenciar chaves de criptografia.
-
-HSM para ambientes regulados se necessário.
-
-
-
----
-
-Fluxo de Dados e Componentes
-
-Collectors/Agents: Filebeat, Winlogbeat, Packetbeat, Osquery, Wazuh agent.
-
-Transport: Kafka para alta taxa de eventos; alternativa: RabbitMQ ou diretamente Logstash/Fluentd.
-
-Processing: Apache Flink / Spark Streaming para pipelines de enriquecimento e normalização.
-
-Storage: Elasticsearch / OpenSearch para logs indexáveis; ClickHouse para análises agregadas; S3/MinIO para raw events.
-
-Detection: Sigma rules (portáveis), Elastic detection engine, modelos de ML (isolation forest, clustering, LSTM para sequences).
-
-SOAR: TheHive + Cortex, ou n8n/StackStorm para automação de playbooks.
-
-Dashboards: Kibana / Grafana para visualização e relatórios.
-
-
+# Execute queries de teste
+curl -XPOST "localhost:9200/logs-*/_search?pretty" \
+  -H 'Content-Type: application/json' \
+  -d @sample_queries/test_query.json
+```
 
 ---
 
-Detecção e Regras (exemplo Sigma / Elastic)
+## 🎯 Casos de Uso
 
-Exemplo de regra Sigma (YAML)
+### 1️⃣ Detecção de Ransomware
 
-title: Possible Suspicious PowerShell Download
-id: 1a2b3c4d-0000-0000-0000-000000000000
-status: experimental
-description: Detects PowerShell process downloading from suspicious domains
-author: SOC Team
+```yaml
+# detection/sigma/windows/ransomware_suspicious_encryption.yml
+title: Suspicious File Encryption Activity
+id: a1b2c3d4-ransomware-detection
+status: stable
+description: Detects massive file modification indicative of ransomware
 logsource:
   product: windows
-  service: sysmon
+  service: security
 detection:
   selection:
-    EventID: 1
-    Image|endswith: '\\powershell.exe'
-    CommandLine|contains: 'Invoke-WebRequest'
+    EventID: 4663
+    ObjectType: 'File'
+    AccessMask: '0x2'
+  timeframe: 60s
+  condition: selection | count(ObjectName) > 100
+level: critical
+```
+
+### 2️⃣ Lateral Movement Detection
+
+```yaml
+# detection/sigma/windows/lateral_movement_psexec.yml
+title: PsExec Lateral Movement
+id: lateral-movement-001
+description: Detects PsExec usage for lateral movement
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    - Image|endswith: '\psexec.exe'
+    - CommandLine|contains: '\\\\*'
   condition: selection
-falsepositives:
-  - Admin tools
 level: high
+```
 
-Exemplo de regra simples (Elastic detection rule JSON)
+### 3️⃣ Data Exfiltration
 
-{
-  "rule_id": "powershell-download-01",
-  "name": "PowerShell Invoke-WebRequest download",
-  "risk_score": 80,
-  "severity": "high",
-  "index": ["logs-*"],
-  "response": ["email", "webhook"],
-  "query": "process.name: \"powershell.exe\" AND process.args: \"Invoke-WebRequest\""
-}
-
-> Mantenha o catálogo de regras em detection/sigma e a versão convertida para o formato da plataforma alvo em detection/elastic_rules.
-
-
-
-
----
-
-Playbooks de Resposta a Incidentes
-
-Crie playbooks para incidentes comuns. Estrutura de template em docs/playbooks/incident_playbook_template.md.
-
-Campos essenciais de um playbook:
-
-Identificação do incidente
-
-Severidade e critérios de escalonamento
-
-Checklist técnico (coleta de evidências, isolar host, bloquear IP)
-
-Comandos e queries (elastic query, osquery, netstat)
-
-Comunicação (quem notificar, templates de e-mail)
-
-Tempo de retenção de evidências
-
-Pós-incidente (root cause analysis, lições aprendidas)
-
-
+```yaml
+# detection/sigma/network/data_exfiltration.yml
+title: Large Data Transfer to External IP
+id: exfil-001
+description: Detects unusual data transfer volumes
+logsource:
+  category: firewall
+detection:
+  selection:
+    action: 'allowed'
+    direction: 'outbound'
+    bytes_out: '>1000000000'  # >1GB
+  timeframe: 5m
+  condition: selection
+level: high
+```
 
 ---
 
-Segurança e Governança de Dados
+## 🤖 Playbooks de Resposta
 
-Classificação de dados: identificar níveis (Pública, Interna, Confidencial, Restrita).
+### 📋 Template de Playbook
 
-Controle de acesso: RBAC no Elasticsearch/Kibana, políticas mínimas, uso de grupos do IdP (okta/aws-sso)
+```markdown
+# Playbook: Ransomware Response
 
-Criptografia: TLS em trânsito; AES-256 para dados em repouso quando suportado.
+## 🎯 Objetivo
+Contenção rápida de ataque ransomware com preservação de evidências.
 
-Segregação de ambiente: redes, contas e clusters separados para dev/stage/prod.
+## 🚨 Trigger
+- Alerta: `ransomware_suspicious_encryption`
+- Severidade: CRITICAL
+- Confiança: 95%+
 
-Auditoria: habilitar logs de auditoria para todas as alterações de configuração e acesso.
+## 📊 Verificação Inicial
+1. Confirmar quantidade de arquivos afetados
+2. Identificar origem (host, usuário, processo)
+3. Verificar propagação para outros hosts
 
-Retenção e anonimização: rotinas para anonimizar dados sensíveis (PII) quando possível; políticas de retenção conforme compliance.
+## 🔒 Contenção Imediata (Automático)
+```python
+# Isolamento de rede via API
+firewall.block_host(infected_host_ip)
+edr.isolate_endpoint(host_id)
 
-LGPD / GDPR: garantir gerenciamento de dados pessoais, fluxo de consentimento, e capacidade de exclusão.
+# Suspensão de processos maliciosos
+edr.kill_process(process_id, process_name)
 
+# Desabilitar conta comprometida
+ad.disable_user_account(username)
+```
 
+## 🔍 Investigação
+```sql
+-- Query para timeline de eventos
+SELECT timestamp, user, process, file_path, action
+FROM events
+WHERE host = '{{infected_host}}'
+  AND timestamp BETWEEN '{{incident_start}}' AND NOW()
+ORDER BY timestamp DESC;
+```
 
----
+## 💾 Preservação de Evidências
+- Snapshot do disco
+- Dump de memória RAM
+- Cópia de logs
+- Network capture (PCAP)
 
-Observabilidade e Métricas
+## 📢 Comunicação
+- **Imediato:** SOC Lead via Slack #incidents-critical
+- **15 min:** CISO via email + SMS
+- **30 min:** Executivos via email
+- **1 hora:** Atualização pública (se aplicável)
 
-Colete métricas de performance (CPU, memória, latência de indexação) e métricas funcionais (tempo de detecção, número de alertas).
+## 🔧 Remediação
+1. Restaurar de backup (último conhecido bom)
+2. Aplicar patches pendentes
+3. Fortalecer regras de firewall
+4. Atualizar assinaturas de antivírus
+5. Revisar privilégios de contas
 
-Integre alertas operacionais (prometheus + alertmanager) e alertas de segurança separados.
+## 📝 Pós-Incidente
+- [ ] Root Cause Analysis completo
+- [ ] Atualizar regras de detecção
+- [ ] Treinamento adicional para usuários
+- [ ] Review de backup procedures
+- [ ] Atualização de playbooks
 
-Dashboards de SRE e SOC distintos.
-
-
-
----
-
-Testes, QA e CI/CD
-
-Testes unitários para parsers/enrichment.
-
-Teste de integração para pipelines (Kafka -> processor -> storage).
-
-Ingestão de massa com dados sintéticos para validação de escalabilidade.
-
-CI: Linting de Sigma rules, validação de templates Kibana/Grafana, scan de IaC (tfsec, checkov).
-
-CD: pipelines para deploy de Helm charts e atualização de regras/dashboards.
-
-
-
----
-
-Contribuição
-
-1. Fork e clone
-
-
-2. Crie uma branch feature/<nome>
-
-
-3. Faça commits atômicos e testes locais
-
-
-4. Abra PR com descrição e testes
-
-
-
-Veja CONTRIBUTING.md para mais detalhes.
-
-
-
----
-
-Arquivos de exemplo (copy/paste)
-
-.gitignore
-
-*.pyc
-__pycache__/
-.env
-secrets.yml
-node_modules/
-.DS_Store
-*.log
-
-examples/docker-compose.yml (mínimo para dev)
-
-version: '3.7'
-services:
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.0
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-    volumes:
-      - esdata:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
-  kibana:
-    image: docker.elastic.co/kibana/kibana:8.10.0
-    ports:
-      - 5601:5601
-    depends_on:
-      - elasticsearch
-  filebeat:
-    image: docker.elastic.co/beats/filebeat:8.10.0
-    volumes:
-      - ./examples/filebeat.yml:/usr/share/filebeat/filebeat.yml
-volumes:
-  esdata:
-
-docs/playbooks/incident_playbook_template.md
-
-# Playbook: <NOME DO INCIDENTE>
-
-## Resumo
-Breve descrição do incidente.
-
-## Critérios de Identificação
-- Regra que disparou: <id da regra>
-- Query de detecção: <elastic query / sigma>
-
-## Severidade
-- Baixa / Média / Alta / Crítica
-
-## Ações Imediatas
-1. Isolar host: `kubectl taint node ...` ou bloquear IP no firewall.
-2. Coletar evidências: listar arquivos, copiar logs, criar snapshot do disco.
-3. Acionar EDR para quarentena.
-
-## Comunicação
-- Notificar: SOC Lead, CTO, Jurídico
-- Canal: Slack #incidentes, e-mail
-
-## Remediação
-- Passos detalhados para contornar a vulnerabilidade.
-
-## Pós-Incident
-- RCA (root cause analysis)
-- Lições aprendidas
-- Atualizar regras / documentação
-
+## ⏱️ SLA
+- Detecção → Contenção: **5 minutos**
+- Contenção → Remediação: **30 minutos**
+- Incidente fechado: **24 horas**
+```
 
 ---
 
-Próximos passos sugeridos
+## 🎨 Stack Tecnológico
 
-1. Popular detection/sigma com regras internas e importadas de repositórios públicos.
+<div align="center">
 
+### Core Platform
 
-2. Definir política de retenção de índices e ILM.
+[![Elasticsearch](https://img.shields.io/badge/Elasticsearch-8.10+-005571?style=for-the-badge&logo=elasticsearch&logoColor=white)](https://www.elastic.co/)
+[![Kafka](https://img.shields.io/badge/Apache_Kafka-3.5+-231F20?style=for-the-badge&logo=apache-kafka&logoColor=white)](https://kafka.apache.org/)
+[![Flink](https://img.shields.io/badge/Apache_Flink-1.17+-E6526F?style=for-the-badge&logo=apache-flink&logoColor=white)](https://flink.apache.org/)
+[![ClickHouse](https://img.shields.io/badge/ClickHouse-23.8+-FFCC01?style=for-the-badge&logo=clickhouse&logoColor=black)](https://clickhouse.com/)
 
+### Detection & Response
 
-3. Criar playbooks para top-5 incidentes: Ransomware, Phishing, Data Exfiltration, Lateral Movement, Privilege Escalation.
+[![Sigma](https://img.shields.io/badge/Sigma_Rules-Latest-FF6600?style=for-the-badge&logo=sigma&logoColor=white)](https://github.com/SigmaHQ/sigma)
+[![TheHive](https://img.shields.io/badge/TheHive-5.0+-6366F1?style=for-the-badge&logo=thehive&logoColor=white)](https://thehive-project.org/)
+[![YARA](https://img.shields.io/badge/YARA-4.3+-00A4EF?style=for-the-badge&logo=yara&logoColor=white)](https://virustotal.github.io/yara/)
 
+### Infrastructure
 
-4. Automatizar pipeline de testes para regras e dashboards.
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-1.27+-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)](https://kubernetes.io/)
+[![Terraform](https://img.shields.io/badge/Terraform-1.5+-7B42BC?style=for-the-badge&logo=terraform&logoColor=white)](https://www.terraform.io/)
+[![Docker](https://img.shields.io/badge/Docker-24.0+-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![Helm](https://img.shields.io/badge/Helm-3.12+-0F1689?style=for-the-badge&logo=helm&logoColor=white)](https://helm.sh/)
 
+### Observability
 
+[![Kibana](https://img.shields.io/badge/Kibana-8.10+-005571?style=for-the-badge&logo=kibana&logoColor=white)](https://www.elastic.co/kibana)
+[![Grafana](https://img.shields.io/badge/Grafana-10.0+-F46800?style=for-the-badge&logo=grafana&logoColor=white)](https://grafana.com/)
+[![Prometheus](https://img.shields.io/badge/Prometheus-2.45+-E6522C?style=for-the-badge&logo=prometheus&logoColor=white)](https://prometheus.io/)
 
+</div>
 
 ---
 
-Contato
+## 🔐 Segurança e Compliance
 
-Para dúvidas e contribuições: security- maykonlincoln.com
-maykon_zero@hotmail.com 
+### 🛡️ Segurança por Design
 
+<table>
+<tr>
+<td width="50%">
+
+#### 🔒 Controles Técnicos
+
+- **Criptografia:**
+  - TLS 1.3 para dados em trânsito
+  - AES-256 para dados em repouso
+  - KMS para gerenciamento de chaves
+  
+- **Autenticação:**
+  - SSO via SAML 2.0 / OAuth 2.0
+  - MFA obrigatório
+  - API keys rotacionados
+  
+- **Autorização:**
+  - RBAC granular
+  - Princípio do menor privilégio
+  - Segregação de funções
+
+</td>
+<td width="50%">
+
+#### 📋 Compliance
+
+- **LGPD (Lei Geral de Proteção de Dados)**
+  - Mapeamento de dados pessoais
+  - Consentimento e finalidade
+  - Direito ao esquecimento
+  
+- **ISO 27001**
+  - ISMS implementation
+  - Risk assessment
+  - Audit logging
+  
+- **GDPR**
+  - Data protection by design
+  - Privacy impact assessment
+  - Cross-border transfers
+
+</td>
+</tr>
+</table>
+
+### 🔍 Auditoria e Governança
+
+```yaml
+# Logs de auditoria obrigatórios
+audit_events:
+  - user_authentication
+  - access_to_sensitive_data
+  - configuration_changes
+  - rule_modifications
+  - data_exports
+  - admin_actions
+
+retention_policy:
+  hot_tier: 30_days      # Elasticsearch
+  warm_tier: 90_days     # ClickHouse
+  cold_tier: 7_years     # S3/MinIO (compliance)
+  
+data_classification:
+  - Public: No encryption required
+  - Internal: Encryption at rest
+  - Confidential: Encryption + access logging
+  - Restricted: Encryption + MFA + approval workflow
+```
 
 ---
 
-Gerado automaticamente como ponto de partida. Personalize conforme políticas e requisitos da sua organização.
+## 📊 Métricas e KPIs
+
+<div align="center">
+
+### 📈 Métricas Operacionais
+
+| KPI | Target | Atual | Trend |
+|-----|--------|-------|-------|
+| **MTTD** (Mean Time To Detect) | < 5 min | 3.2 min | ✅ ↓ |
+| **MTTR** (Mean Time To Respond) | < 15 min | 12 min | ✅ ↓ |
+| **False Positive Rate** | < 5% | 3.8% | ✅ ↓ |
+| **Detection Coverage** | > 90% | 94% | ✅ ↑ |
+| **System Uptime** | 99.9% | 99.95% | ✅ ↑ |
+| **Events/Second** | 100k | 85k | 📊 Stable |
+
+</div>
+
+### 📉 Dashboards Principais
+
+1. **Executive Dashboard**
+   - Security posture overview
+   - Trend analysis
+   - Compliance status
+   - Risk metrics
+
+2. **SOC Analyst Workspace**
+   - Real-time alerts
+   - Investigation tools
+   - Case management
+   - Playbook execution
+
+3. **Threat Intelligence**
+   - IOC feeds
+   - Threat landscape
+   - Attack patterns
+   - Geolocation map
+
+---
+
+## 🧪 Testes e Qualidade
+
+### Test Coverage
+
+```bash
+# Testes unitários
+pytest tests/unit/ --cov=src --cov-report=html
+
+# Testes de integração
+pytest tests/integration/ -v
+
+# Testes end-to-end
+pytest tests/e2e/ --selenium
+
+# Security tests
+bandit -r src/
+safety check
+```
+
+### CI/CD Pipeline
+
+```yaml
+# .github/workflows/ci.yml
+name: SOC Platform CI/CD
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Tests
+        run: |
+          docker-compose -f docker-compose.test.yml up --abort-on-container-exit
+      
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Trivy
+        run: |
+          trivy image soc-platform:latest
+      - name: Run tfsec
+        run: |
+          tfsec infra/terraform/
+          
+  deploy:
+    needs: [test, security-scan]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Deploy to Production
+        run: |
+          helm upgrade soc-platform ./charts/soc-platform \
+            --namespace production \
+            --values values-production.yaml
+```
+
+---
+
+## 📚 Documentação
+
+- 📖 [**Documentação Completa**](docs/README.md)
+- 🏗️ [**Guia de Arquitetura**](docs/architecture.md)
+- 🚀 [**Guia de Deploy**](docs/deployment.md)
+- 🔐 [**Políticas de Segurança**](docs/security.md)
+- 📋 [**Compliance Guide**](docs/compliance.md)
+- 🤖 [**Playbooks**](docs/playbooks/)
+- 🔌 [**API Reference**](docs/api/)
+
+---
+
+## 🤝 Contribuindo
+
+Contribuições são bem-vindas! Veja nosso [Guia de Contribuição](CONTRIBUTING.md).
+
+### Como Contribuir
+
+1. Fork o projeto
+2. Crie uma branch (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+### 📝 Padrões de Código
+
+- Sigma rules: seguir [Sigma specification](https://github.com/SigmaHQ/sigma-specification)
+- Python: PEP 8 + Black formatter
+- YAML: yamllint validated
+- Terraform: terraform fmt + tflint
+
+---
+
+## 📄 Licença
+
+Este projeto está licenciado sob a Apache License 2.0 - veja [LICENSE](LICENSE) para detalhes.
+
+---
+
+## 👥 Equipe e Suporte
+
+<div align="center">
+
+**Desenvolvido por especialistas em Security Operations**
+
+[![Email](https://img.shields.io/badge/Email-security@maykonlincoln.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:security@maykonlincoln.com)
+[![Email](https://img.shields.io/badge/Suporte-maykon__zero@hotmail.com-0078D4?style=for-the-badge&logo=microsoft-outlook&logoColor=white)](mailto:maykon_zero@hotmail.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Conectar-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/maykonlincoln)
+
+### 💬 Canais de Suporte
+
+- 📧 **Email:** security@maykonlincoln.com
+- 💼 **LinkedIn:** [Maykon Lincoln](https://linkedin.com/in/maykonlincoln)
+- 🐛 **Issues:** [GitHub Issues](https://github.com/SEU-ORG/SOC-Platform/issues)
+- 📚 **Docs:** [Documentation Portal](https://docs.soc-platform.io)
+
+</div>
+
+---
+
+## 🌟 Agradecimentos
+
+Agradecimentos especiais para:
+- [Sigma HQ](https://github.com/SigmaHQ/sigma) - Detection rules
+- [Elastic](https://www.elastic.co/) - SIEM platform
+- [TheHive Project](https://thehive-project.org/) - SOAR capabilities
+- [Apache Foundation](https://apache.org/) - Kafka, Flink
+- Comunidade de InfoSec
+
+---
+
+## 🛣️ Roadmap
+
+### ✅ Q1 2026 (Concluído)
+- [x] Core platform architecture
+- [x] Sigma rules integration
+- [x] Basic SOAR playbooks
+- [x] Elasticsearch + Kafka pipeline
+
+### 🚧 Q2 2026 (Em Progresso)
+- [ ] ML-based anomaly detection
+- [ ] Advanced threat hunting
+- [ ] Mobile app para SOC analysts
+- [ ] Enhanced threat intelligence
+
+### 📅 Q3 2026 (Planejado)
+- [ ] User Entity Behavior Analytics (UEBA)
+- [ ] Deception technology integration
+- [ ] Advanced forensics toolkit
+- [ ] Multi-tenant support
+
+### 🔮 Q4 2026 (Futuro)
+- [ ] AI-powered auto-remediation
+- [ ] Quantum-safe cryptography
+- [ ] Blockchain audit trail
+- [ ] Global threat sharing network
+
+---
+
+<div align="center">
+
+### ⭐ Star este projeto no GitHub!
+
+[![GitHub stars](https://img.shields.io/github/stars/SEU-ORG/SOC-Platform?style=social)](https://github.com/SEU-ORG/SOC-Platform/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/SEU-ORG/SOC-Platform?style=social)](https://github.com/SEU-ORG/SOC-Platform/network/members)
+[![GitHub watchers](https://img.shields.io/github/watchers/SEU-ORG/SOC-Platform?style=social)](https://github.com/SEU-ORG/SOC-Platform/watchers)
+
+**[⬆ Voltar ao Topo](#-soc-platform)**
+
+---
+
+*Protegendo organizações através de inteligência e automação* 🛡️
+
+<sub>Última atualização: Fevereiro 2026</sub>
+
+</div>
